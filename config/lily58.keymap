@@ -1,0 +1,213 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/backlight.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+    conditional_layers { compatible = "zmk,conditional-layers"; };
+
+    behaviors {
+        backspace_delete: backspace_delete {
+            compatible = "zmk,behavior-mod-morph";
+            label = "BACKSPACE_DELETE";
+            bindings = <&kp BSPC>, <&kp DELETE>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        under_brig_encoder: under_brig_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            label = "UNDER_BRIG_ENCODER";
+            #sensor-binding-cells = <0>;
+            bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
+        };
+
+        rgb_brig_encoder: rgb_brig_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            label = "RGB_BRIG_ENCODER";
+            #sensor-binding-cells = <0>;
+            bindings = <&bl BL_INC>, <&bl BL_DEC>;
+        };
+
+        hold_tap_layer: hold_tap_layer {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOLD_TAP_LAYER";
+            bindings = <&mo>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+        };
+
+        turn_off_layer: turn_off_layer {
+            compatible = "zmk,behavior-toggle-layer";
+            label = "TURN_OFF_LAYER";
+            #binding-cells = <1>;
+            toggle-mode = "off";
+        };
+
+        turn_on_layer: turn_on_layer {
+            compatible = "zmk,behavior-toggle-layer";
+            label = "TURN_ON_LAYER";
+            #binding-cells = <1>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        CB_LShift {
+            bindings = <&kp LSHIFT>;
+            key-positions = <28 27>;
+        };
+
+        CB_RShift {
+            bindings = <&kp RSHIFT>;
+            key-positions = <31 32>;
+        };
+
+        CB {
+            bindings = <&mo 3>;
+            key-positions = <7 8>;
+        };
+
+        CB_l2 {
+            bindings = <&kp ESC>;
+            key-positions = <3 4>;
+        };
+    };
+
+    macros {
+        mac_bt1_macro: mac_bt1_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 1 &to 1 &rgb_ug RGB_COLOR_HSB(268,100,31)>;
+            label = "MAC_BT1_MACRO";
+        };
+
+        win_bt0_macro: win_bt0_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 0 &to 0 &rgb_ug RGB_COLOR_HSB(0,100,50)>;
+            label = "WIN_BT0_MACRO";
+        };
+
+        win_bt2_macro: win_bt2_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 2 &to 0 &rgb_ug RGB_COLOR_HSB(235,100,50)>;
+            label = "WIN_BT2_MACRO";
+        };
+
+        win_bt3_macro: win_bt3_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 3 &to 0 &rgb_ug RGB_COLOR_HSB(116,100,50)>;
+            label = "WIN_BT3_MACRO";
+        };
+
+        win_bt4_macro: win_bt4_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 4 &to 0 &rgb_ug RGB_COLOR_HSB(66,100,50)>;
+            label = "WIN_BT4_MACRO";
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        Windows {
+            // ------------------------------------------------------------------------------------------------------------
+            // |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
+            // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
+            // |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
+            // | SHIFT |  Z  |  X  |  C   |  V   |  B   |  MUTE  |  |RGB_TOG|  N   |  M    |  ,    |  .   |   /   | SHIFT |
+            //                     | ALT  | GUI  | LOWER|  SPACE |  | ENTER | RAISE| BSPC  | GUI   |
+
+            bindings = <
+&kp GRAVE        &kp N1  &kp N2  &kp N3        &kp N4     &kp N5                                             &kp N6         &kp N7     &kp N8     &kp N9   &kp N0    &backspace_delete
+&kp TAB          &kp Q   &kp W   &kp E         &kp R      &kp T                                              &kp Y          &kp U      &kp I      &kp O    &kp P     &kp BACKSLASH
+&mt LSHIFT CLCK  &kp A   &kp S   &kp D         &kp F      &kp G                                              &kp H          &kp J      &kp K      &kp L    &kp SEMI  &kp SINGLE_QUOTE
+&to 1            &kp Z   &kp X   &kp C         &kp V      &kp B         &kp C_MUTE    &kp C_PLAY_PAUSE       &kp N          &kp M      &kp COMMA  &kp DOT  &kp FSLH  &to 3
+                                 &kp LEFT_GUI  &kp LCTRL  &kp LEFT_ALT  &kp SPACE     &hold_tap_layer 2 RET  &kp RIGHT_ALT  &kp RCTRL  &kp K_APP
+            >;
+
+            sensor-bindings =
+                <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>,
+                <&inc_dec_kp C_NEXT C_PREVIOUS>;
+
+            label = "Windows";
+        };
+
+        MacOS {
+            label = "MacOS";
+            bindings = <
+&trans  &trans  &trans  &trans     &trans    &trans                    &trans  &trans    &trans     &trans  &trans  &trans
+&trans  &trans  &trans  &trans     &trans    &trans                    &trans  &trans    &trans     &trans  &trans  &trans
+&trans  &trans  &trans  &trans     &trans    &trans                    &trans  &trans    &trans     &trans  &trans  &trans
+&to 2   &trans  &trans  &trans     &trans    &trans  &trans    &trans  &trans  &trans    &trans     &trans  &trans  &to 0
+                        &kp LCTRL  &kp LGUI  &trans  &trans    &trans  &trans  &kp RGUI  &kp K_APP
+            >;
+
+            sensor-bindings =
+                <&inc_dec_kp C_VOL_UP C_VOL_DN>,
+                <&inc_dec_kp C_NEXT C_PREVIOUS>;
+        };
+
+        arrow_symbols {
+            // ------------------------------------------------------------------------------------------------------------
+            // | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
+            // |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
+            // |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
+            // |EXTPWR |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
+            //                     |      |      |      |        |  |       |      |       |       |
+
+            bindings = <
+&kp ESC  &kp F1  &kp F2          &kp F3          &kp F4           &kp F5                           &kp F6         &kp F7         &kp F8                &kp F9                 &kp F10  &kp DELETE
+&trans   &trans  &trans          &kp UP_ARROW    &trans           &kp PAGE_UP                      &trans         &trans         &trans                &trans                 &kp F11  &kp F12
+&trans   &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp PAGE_DOWN                    &kp MINUS      &kp EQUAL      &kp LEFT_BRACKET      &kp RIGHT_BRACKET      &trans   &trans
+&to 3    &trans  &kp HOME        &trans          &kp END          &trans         &trans    &trans  &kp LS(MINUS)  &kp LS(EQUAL)  &kp LS(LEFT_BRACKET)  &kp LS(RIGHT_BRACKET)  &trans   &to 1
+                                 &trans          &trans           &trans         &trans    &trans  &kp LEFT_ALT   &kp LCTRL      &trans
+            >;
+
+            sensor-bindings =
+                <&inc_dec_kp PAGE_UP PAGE_DOWN>,
+                <&inc_dec_kp C_BRIGHTNESS_INC C_BRIGHTNESS_DEC>;
+
+            label = "Arrows";
+        };
+
+        adjust_layer {
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // | BTCLR  |  BT1    |  BT2    |   BT3   |   BT4   |   BT5   |                  |      |      |       |      |       |       |
+            // | EXTPWR | RGB_HUD | RGB_HUI | RGB_SAD | RGB_SAI | RGB_EFF |                  |      |      |       |      |       |       |
+            // |        | RGB_BRD | RGB_BRI |         |         |         |                  |      |      |       |      |       |       |
+            // |        |         |         |         |         |         | RGB_TOG | |      |      |      |       |      |       |       |
+            //                    |         |         |         |         |         | |      |      |      |       |      |
+
+            bindings = <
+&bt BT_CLR         &win_bt0_macro  &mac_bt1_macro  &win_bt2_macro  &win_bt3_macro   &win_bt4_macro                    &trans           &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_EFF  &rgb_ug RGB_SPI  &rgb_ug RGB_COLOR_HSB(0,94,50)
+&ext_power EP_TOG  &mkp MB3        &mkp MB2        &mmv MOVE_UP    &mkp MB1         &msc SCRL_UP                      &rgb_ug RGB_TOG  &rgb_ug RGB_HUD  &rgb_ug RGB_SAD  &rgb_ug RGB_EFR  &rgb_ug RGB_SPD  &rgb_ug RGB_COLOR_HSB(280,100,50)
+&out OUT_TOG       &trans          &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &msc SCRL_DOWN                    &trans           &trans           &trans           &trans           &trans           &rgb_ug RGB_COLOR_HSB(0,0,100)
+&to 0              &trans          &msc SCRL_LEFT  &trans          &msc SCRL_RIGHT  &trans          &trans    &trans  &trans           &trans           &trans           &trans           &trans           &to 2
+                                                   &trans          &trans           &trans          &trans    &trans  &trans           &trans           &trans
+            >;
+
+            sensor-bindings = <&rgb_brig_encoder>, <&under_brig_encoder>;
+
+            label = "Mouse/RGB";
+        };
+    };
+};
+
